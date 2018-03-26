@@ -12,7 +12,9 @@ public class PhoneCallCalculatorImpl implements PhoneCallCalculator {
      * @param callType
      */
     public void calculateAndBillPhoneCall(String phoneNumber, int durationInSeconds, CallTypeEnum callType) {
+
         double price = -1;
+
         int minutes = durationInSeconds/60;
 
         switch(callType) {
@@ -23,7 +25,7 @@ public class PhoneCallCalculatorImpl implements PhoneCallCalculator {
         }
 
             if(minutes > 10)
-              price = price * 0.9;
+              price = price / 0.9;
 
         try{
             BillCustomerService billCustomerService = BillCustomerService.connect();
