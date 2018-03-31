@@ -1,4 +1,4 @@
-package com.practice;
+package com.practice.PhoneCallCalculator;
 
 public class BillCastomerServiceImpl implements BillCustomerService {
     @Override
