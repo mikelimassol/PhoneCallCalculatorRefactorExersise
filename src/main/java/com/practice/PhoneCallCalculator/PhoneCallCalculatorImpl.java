@@ -2,6 +2,17 @@ package com.practice.PhoneCallCalculator;
 
 public class PhoneCallCalculatorImpl implements PhoneCallCalculator {
 
+    private  BillCustomerService billCustomerService;
+
+    public PhoneCallCalculatorImpl() {
+        BillCustomerService.connect();
+    }
+
+
+    public PhoneCallCalculatorImpl(BillCustomerService billCustomerService) {
+        this.billCustomerService = billCustomerService;
+    }
+
     /**
      * Local phone calls cost 2p per minutes
      * National phone calls cost 5p per minute
@@ -13,22 +24,11 @@ public class PhoneCallCalculatorImpl implements PhoneCallCalculator {
      */
     public void calculateAndBillPhoneCall(String phoneNumber, int durationInSeconds, CallTypeEnum callType) {
 
-        double price = -1;
-
-        int minutes = durationInSeconds/60;
-
-        switch(callType) {
-            case LOCAL:
-                price = minutes * 0.02;
-            case NATIONAL:
-                price = minutes * 0.05;
-        }
-
-            if(minutes > 10)
-              price = price / 0.9;
+        double minutes = this.calculateMinutes(durationInSeconds);
+        double price = this.calculateCost(minutes, callType);
+        price = this.calculateDiscount(minutes, price);
 
         try{
-            BillCustomerService billCustomerService = BillCustomerService.connect();
             billCustomerService.chargePhoneCall(phoneNumber, price);
         } catch(Exception ex){
             ex.printStackTrace();
@@ -42,8 +42,20 @@ public class PhoneCallCalculatorImpl implements PhoneCallCalculator {
 
         phoneCallCalculator.calculateAndBillPhoneCall("123123123", 1200, CallTypeEnum.LOCAL);
 
-
-
     }
 
+    double calculateMinutes(int durationInSeconds) {
+        return durationInSeconds/60;
+    }
+
+    double calculateCost(double minutes, CallTypeEnum callType) {
+        return callType.calculatePrice(minutes);
+    }
+
+    double calculateDiscount(double minutes, double price) {
+        if(minutes > 10)
+            price = price * 0.9;
+
+        return price;
+    }
 }

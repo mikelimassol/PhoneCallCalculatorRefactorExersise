@@ -1,4 +1,4 @@
-package com.practice;
+package com.practice.PhoneCallCalculator;
 
 import org.junit.Test;
 
